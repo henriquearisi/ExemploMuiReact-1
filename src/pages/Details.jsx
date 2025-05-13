@@ -4,6 +4,7 @@ import { Container, Box, Typography, Avatar, CircularProgress, Button, Paper } f
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { Email } from '@mui/icons-material';
 
 // Corrige o ícone padrão do Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
@@ -14,6 +15,28 @@ L.Icon.Default.mergeOptions({
 });
 
 export default function Details() {
+
+    const {email} = useParams()
+    const [loading, setLoading] = useState(true)
+    const [user, setUser] = useState(null)
+    const [error, setError] = useState(null)
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        const storageUsers = localStorage.getItem('users')
+        if(storageUsers){
+            const users =JSON.parse(storageUsers)
+            const userFound = users.find((user) => user.email = email)
+
+            if (userFound){
+                setUser(userFound)
+                setLoading(false)
+            }else{
+                setError("E-mail não encontrado")
+                setLoading(false)
+            }
+        }
+    } , [email])
 
     if (loading) {
         return (
